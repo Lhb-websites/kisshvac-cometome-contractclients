@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HVAC Google Ads Diagnostic | Hans Lacida</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=IBM+Plex+Mono:wght@400;500&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --orange: #E8500A;
+    --orange-light: #FFF0E8;
+    --orange-dark: #B33D06;
+    --black: #0E0E0E;
+    --white: #FAFAF7;
+    --gray: #6B6B6B;
+    --gray-light: #F0EFE9;
+    --gray-mid: #D4D3CC;
+    --green: #1A6B3C;
+    --green-light: #E8F4EE;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Lora', Georgia, serif;
+    background: var(--white);
+    color: var(--black);
+    font-size: 17px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+  .mono { font-family: 'IBM Plex Mono', monospace; }
+  .syne { font-family: 'Syne', sans-serif; }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1rem 2.5rem;
+    background: var(--black);
+    border-bottom: 1px solid #222;
+  }
+  .nav-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1rem; color: var(--white); letter-spacing: 0.04em; text-decoration: none; }
+  .nav-cta {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.75rem; font-weight: 500;
+    background: var(--orange); color: #fff;
+    border: none; padding: 0.55rem 1.2rem; cursor: pointer; text-decoration: none;
+    letter-spacing: 0.03em;
+    transition: background 0.2s;
+  }
+  .nav-cta:hover { background: var(--orange-dark); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    background: var(--black);
+    color: var(--white);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    padding: 8rem 2.5rem 5rem;
+    gap: 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -100px; right: -100px;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(232,80,10,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-eyebrow {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; font-weight: 500;
+    color: var(--orange); letter-spacing: 0.12em; text-transform: uppercase;
+    margin-bottom: 1.2rem;
+  }
+  .hero h1 {
+    font-family: 'Syne', sans-serif; font-weight: 800;
+    font-size: clamp(2.4rem, 4vw, 3.6rem);
+    line-height: 1.08;
+    margin-bottom: 1.5rem;
+  }
+  .hero h1 em { font-style: italic; color: var(--orange); }
+  .hero-sub {
+    font-size: 1.05rem; color: #B0AEA8;
+    margin-bottom: 2.5rem;
+    max-width: 480px;
+    line-height: 1.75;
+  }
+  .hero-ctas { display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; margin-bottom: 3rem; }
+  .btn-primary {
+    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.9rem;
+    background: var(--orange); color: #fff;
+    padding: 1rem 2rem; text-decoration: none;
+    letter-spacing: 0.02em;
+    transition: background 0.2s, transform 0.1s;
+    display: inline-block;
+  }
+  .btn-primary:hover { background: var(--orange-dark); transform: translateY(-1px); }
+  .btn-secondary {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem;
+    color: #B0AEA8; text-decoration: none;
+    border-bottom: 1px solid #444;
+    padding-bottom: 2px;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .btn-secondary:hover { color: var(--white); border-color: var(--white); }
+  .trust-bar {
+    display: flex; gap: 2rem; flex-wrap: wrap;
+    border-top: 1px solid #222; padding-top: 1.5rem;
+  }
+  .trust-item { font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; color: #888; letter-spacing: 0.04em; }
+  .trust-item span { display: block; font-size: 1.1rem; font-weight: 500; color: var(--white); margin-bottom: 2px; }
+
+  .hero-right { position: relative; }
+  .hero-card {
+    background: #181818; border: 1px solid #2A2A2A;
+    padding: 2rem;
+  }
+  .hero-card-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: #666; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 1.2rem; }
+  .metric-row { display: flex; justify-content: space-between; align-items: center; padding: 0.9rem 0; border-bottom: 1px solid #222; }
+  .metric-row:last-child { border-bottom: none; }
+  .metric-label { font-size: 0.85rem; color: #888; }
+  .metric-before { font-family: 'IBM Plex Mono', monospace; font-size: 0.85rem; color: #555; text-decoration: line-through; }
+  .metric-after { font-family: 'IBM Plex Mono', monospace; font-size: 1rem; color: var(--orange); font-weight: 500; }
+  .metric-delta { font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; background: #1A3A26; color: #4CAF73; padding: 2px 8px; }
+
+  /* PROBLEM */
+  .section { padding: 6rem 2.5rem; }
+  .section-inner { max-width: 1140px; margin: 0 auto; }
+  .section-eyebrow { font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; color: var(--orange); letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 1rem; }
+  .section-h2 { font-family: 'Syne', sans-serif; font-weight: 800; font-size: clamp(2rem, 3.5vw, 2.9rem); line-height: 1.1; margin-bottom: 1.5rem; }
+  .section-h2 em { font-style: italic; }
+
+  .problem-section { background: var(--gray-light); }
+  .problem-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: start; }
+  .problem-list { list-style: none; margin-top: 1.5rem; }
+  .problem-list li {
+    padding: 1rem 0 1rem 1.5rem;
+    border-bottom: 1px solid var(--gray-mid);
+    font-size: 0.97rem;
+    position: relative;
+    color: #3A3A3A;
+  }
+  .problem-list li::before { content: '×'; position: absolute; left: 0; color: var(--orange); font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem; }
+  .problem-result {
+    background: var(--black); color: var(--white);
+    padding: 2rem;
+    margin-top: 1.5rem;
+  }
+  .problem-result p { font-size: 0.92rem; color: #B0AEA8; line-height: 1.8; }
+  .problem-result strong { color: var(--white); }
+  .problem-right h3 { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.3rem; margin-bottom: 1rem; }
+  .stat-block { background: var(--white); border: 1px solid var(--gray-mid); padding: 1.5rem; margin-bottom: 1rem; }
+  .stat-number { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 2.8rem; line-height: 1; color: var(--orange); }
+  .stat-label { font-size: 0.85rem; color: var(--gray); margin-top: 0.3rem; }
+
+  /* CREDIBILITY */
+  .credibility-section { background: var(--black); color: var(--white); }
+  .credibility-section .section-h2 { color: var(--white); }
+  .cred-intro { max-width: 620px; color: #B0AEA8; font-size: 0.97rem; margin-bottom: 3rem; }
+  .cred-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: #222; margin-bottom: 3rem; }
+  .cred-item { background: #0E0E0E; padding: 2rem; }
+  .cred-item .num { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 2.2rem; color: var(--orange); margin-bottom: 0.3rem; }
+  .cred-item .lbl { font-size: 0.82rem; color: #888; }
+  .cred-item .desc { font-size: 0.9rem; color: #CCC; margin-top: 0.5rem; }
+  .cred-tagline { font-family: 'Lora', serif; font-style: italic; font-size: 1.35rem; color: #C0BEB8; border-left: 3px solid var(--orange); padding-left: 1.5rem; max-width: 600px; }
+
+  /* OFFER */
+  .offer-section { background: var(--white); }
+  .offer-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 5rem; align-items: start; }
+  .offer-list { list-style: none; margin: 1.5rem 0; }
+  .offer-list li { padding: 0.75rem 0 0.75rem 1.5rem; border-bottom: 1px solid var(--gray-mid); font-size: 0.92rem; position: relative; }
+  .offer-list li::before { content: '→'; position: absolute; left: 0; color: var(--orange); font-family: 'Syne', sans-serif; font-weight: 700; }
+  .guarantee-box { background: var(--green-light); border: 1px solid #A8D4BC; padding: 1.5rem; margin-top: 1.5rem; }
+  .guarantee-box p { font-size: 0.88rem; color: var(--green); line-height: 1.7; }
+  .guarantee-box strong { font-weight: 600; }
+  .offer-cta-box { background: var(--black); color: var(--white); padding: 3rem; position: sticky; top: 7rem; }
+  .offer-price { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 3.5rem; color: var(--orange); line-height: 1; margin-bottom: 0.5rem; }
+  .offer-price-sub { font-family: 'IBM Plex Mono', monospace; font-size: 0.75rem; color: #888; margin-bottom: 2rem; }
+  .offer-cta-box .btn-primary { width: 100%; text-align: center; margin-bottom: 1rem; }
+  .offer-cta-book { display: block; font-family: 'IBM Plex Mono', monospace; font-size: 0.75rem; color: #888; text-align: center; text-decoration: none; border-bottom: 1px solid #333; padding-bottom: 2px; margin: 0 auto; width: fit-content; transition: color 0.2s; }
+  .offer-cta-book:hover { color: var(--white); }
+  .offer-cta-box ul { list-style: none; margin-top: 2rem; border-top: 1px solid #222; padding-top: 1.5rem; }
+  .offer-cta-box ul li { font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; color: #888; padding: 4px 0; }
+  .offer-cta-box ul li::before { content: '✓ '; color: #4CAF73; }
+
+  /* HOW IT WORKS */
+  .how-section { background: var(--gray-light); }
+  .steps-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; margin-top: 3rem; }
+  .step { padding: 2.5rem; border-right: 1px solid var(--gray-mid); position: relative; }
+  .step:last-child { border-right: none; }
+  .step-num { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 4rem; color: var(--gray-mid); line-height: 1; margin-bottom: 1rem; }
+  .step h3 { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.05rem; margin-bottom: 0.75rem; }
+  .step p { font-size: 0.88rem; color: var(--gray); line-height: 1.75; }
+  .step-price { font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem; color: var(--orange); margin-top: 1rem; }
+  .step-arrow { position: absolute; right: -14px; top: 50%; transform: translateY(-50%); font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.2rem; color: var(--orange); z-index: 2; background: var(--gray-light); padding: 0 4px; }
+
+  /* CASE STUDIES */
+  .cases-section { background: var(--white); }
+  .cases-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 3rem; }
+  .case-card { border: 1px solid var(--gray-mid); padding: 2rem; }
+  .case-tag { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: var(--orange); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 1rem; }
+  .case-card h3 { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem; margin-bottom: 1.2rem; }
+  .case-before-after { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.2rem; }
+  .bef-aft-row { display: flex; justify-content: space-between; font-size: 0.82rem; }
+  .bef { color: #AAA; text-decoration: line-through; font-family: 'IBM Plex Mono', monospace; }
+  .aft { color: var(--black); font-family: 'IBM Plex Mono', monospace; font-weight: 500; }
+  .case-result { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.4rem; color: var(--orange); }
+  .case-result-label { font-size: 0.78rem; color: var(--gray); }
+  .case-system { font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; color: #AAA; margin-top: 1rem; border-top: 1px solid var(--gray-mid); padding-top: 0.75rem; }
+
+  /* WHO */
+  .who-section { background: var(--black); color: var(--white); }
+  .who-section .section-h2 { color: var(--white); }
+  .who-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; margin-top: 3rem; }
+  .who-fit h3, .who-notfit h3 { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.85rem; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 1.2rem; }
+  .who-fit h3 { color: #4CAF73; }
+  .who-notfit h3 { color: #E24B4A; }
+  .who-list { list-style: none; }
+  .who-list li { font-size: 0.9rem; color: #C0BEB8; padding: 0.6rem 0 0.6rem 1.5rem; border-bottom: 1px solid #1E1E1E; position: relative; }
+  .who-list li::before { position: absolute; left: 0; font-weight: 700; }
+  .who-fit .who-list li::before { content: '✓'; color: #4CAF73; }
+  .who-notfit .who-list li::before { content: '✗'; color: #E24B4A; }
+
+  /* FAQ */
+  .faq-section { background: var(--gray-light); }
+  .faq-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 3rem; }
+  .faq-item { background: var(--white); padding: 1.75rem; border: 1px solid var(--gray-mid); }
+  .faq-item h3 { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.95rem; margin-bottom: 0.75rem; }
+  .faq-item p { font-size: 0.87rem; color: var(--gray); line-height: 1.75; }
+
+  /* FINAL CTA */
+  .final-cta {
+    background: var(--orange);
+    color: var(--white);
+    padding: 7rem 2.5rem;
+    text-align: center;
+  }
+  .final-cta .section-h2 { color: var(--white); margin-bottom: 1rem; }
+  .final-cta p { color: rgba(255,255,255,0.85); font-size: 1.05rem; margin-bottom: 2.5rem; max-width: 500px; margin-left: auto; margin-right: auto; }
+  .final-cta-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+  .btn-white {
+    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.9rem;
+    background: var(--white); color: var(--orange);
+    padding: 1rem 2.2rem; text-decoration: none;
+    transition: background 0.2s, transform 0.1s;
+    display: inline-block;
+  }
+  .btn-white:hover { background: var(--orange-light); transform: translateY(-1px); }
+  .btn-outline-white {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem;
+    color: rgba(255,255,255,0.85); text-decoration: none;
+    border: 1px solid rgba(255,255,255,0.4);
+    padding: 0.9rem 1.8rem;
+    transition: border-color 0.2s, background 0.2s;
+    display: inline-block;
+  }
+  .btn-outline-white:hover { border-color: #fff; background: rgba(255,255,255,0.1); }
+
+  /* FOOTER */
+  footer { background: var(--black); color: #666; padding: 3rem 2.5rem; }
+  .footer-inner { max-width: 1140px; margin: 0 auto; display: flex; justify-content: space-between; align-items: start; flex-wrap: wrap; gap: 2rem; }
+  .footer-brand { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1rem; color: var(--white); margin-bottom: 0.5rem; }
+  .footer-sub { font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; color: #555; }
+  .footer-links { list-style: none; display: flex; gap: 2rem; flex-wrap: wrap; }
+  .footer-links a { font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; color: #666; text-decoration: none; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--white); }
+  .footer-copy { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: #444; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid #1A1A1A; text-align: center; }
+
+  /* UTILITY */
+  .text-orange { color: var(--orange); }
+  .divider { border: none; border-top: 1px solid var(--gray-mid); margin: 2rem 0; }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+  .hero-content > * { animation: fadeUp 0.7s ease both; }
+  .hero-eyebrow { animation-delay: 0.1s; }
+  .hero h1 { animation-delay: 0.22s; }
+  .hero-sub { animation-delay: 0.34s; }
+  .hero-ctas { animation-delay: 0.44s; }
+  .trust-bar { animation-delay: 0.56s; }
+  .hero-right { animation: fadeUp 0.8s ease 0.3s both; }
+
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; padding: 7rem 1.5rem 4rem; }
+    .hero-right { display: none; }
+    .problem-grid, .offer-grid, .who-grid, .faq-grid { grid-template-columns: 1fr; gap: 2rem; }
+    .steps-grid, .cases-grid { grid-template-columns: 1fr; }
+    .cred-grid { grid-template-columns: 1fr; }
+    .step { border-right: none; border-bottom: 1px solid var(--gray-mid); }
+    .step-arrow { display: none; }
+    nav { padding: 1rem 1.5rem; }
+    .section { padding: 4rem 1.5rem; }
+    .offer-cta-box { position: static; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">KaizenStrategy</a>
+  <a href="#diagnostic" class="nav-cta">Get $500 Diagnostic</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <p class="hero-eyebrow mono">HVAC Paid Acquisition Systems · Tampa Bay</p>
+    <h1>Your Google Ads Are <em>Bleeding Money.</em> I'll Show You Where — In 48 Hours.</h1>
+    <p class="hero-sub">$500 diagnostic reveals exactly where your HVAC marketing budget is leaking. Tampa Bay contractors: stop losing jobs to competitors with better systems.</p>
+    <div class="hero-ctas">
+      <a href="#diagnostic" class="btn-primary">Get My $500 Diagnostic</a>
+      <a href="#cases" class="btn-secondary">See case studies ↓</a>
+    </div>
+    <div class="trust-bar">
+      <div class="trust-item mono"><span>$550M+</span>Revenue Tracked</div>
+      <div class="trust-item mono"><span>60×</span>Peak ROAS</div>
+      <div class="trust-item mono"><span>11+</span>Years in Paid Acq.</div>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-card">
+      <div class="hero-card-label mono">Live Account · Before vs. After</div>
+      <div class="metric-row">
+        <span class="metric-label">Cost Per Lead</span>
+        <span class="metric-before">$115</span>
+        <span class="metric-after">$54</span>
+        <span class="metric-delta">−53%</span>
+      </div>
+      <div class="metric-row">
+        <span class="metric-label">Monthly Leads</span>
+        <span class="metric-before">18</span>
+        <span class="metric-after">47</span>
+        <span class="metric-delta">+161%</span>
+      </div>
+      <div class="metric-row">
+        <span class="metric-label">Wasted Spend</span>
+        <span class="metric-before">$4,200/mo</span>
+        <span class="metric-after">$380/mo</span>
+        <span class="metric-delta">−91%</span>
+      </div>
+      <div class="metric-row">
+        <span class="metric-label">ROAS</span>
+        <span class="metric-before">3.1×</span>
+        <span class="metric-after">11.4×</span>
+        <span class="metric-delta">+268%</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEM -->
+<section class="section problem-section" id="problem">
+  <div class="section-inner">
+    <div class="problem-grid">
+      <div class="problem-left">
+        <p class="section-eyebrow">The Real Problem</p>
+        <h2 class="section-h2 syne">Spending $5K–$15K/Month on Google Ads But <em>Can't Scale?</em></h2>
+        <ul class="problem-list">
+          <li>Wasted spend on irrelevant searches — DIY queries, job seekers, wrong service areas</li>
+          <li>Conversion tracking missing or broken (you don't know which ads actually work)</li>
+          <li>Generic campaigns built by agencies who've never run a single HVAC ad</li>
+          <li>No system to capture, nurture, and close high-intent leads at scale</li>
+          <li>Competitors with worse reviews outrank you — because their systems are better</li>
+        </ul>
+        <div class="problem-result">
+          <p><strong>The result?</strong> $400+ cost per lead. Inconsistent call volume. Fighting for scraps while newer competitors eat your lunch — and they're doing it with your own ad budget.</p>
+        </div>
+      </div>
+      <div class="problem-right">
+        <h3 class="syne">What contractors typically find when we dig in:</h3>
+        <div class="stat-block">
+          <div class="stat-number">$3,800</div>
+          <div class="stat-label">Average monthly wasted spend found in first audit</div>
+        </div>
+        <div class="stat-block">
+          <div class="stat-number">73%</div>
+          <div class="stat-label">Of HVAC accounts have broken or missing conversion tracking</div>
+        </div>
+        <div class="stat-block">
+          <div class="stat-number">53%</div>
+          <div class="stat-label">Average CPA reduction within 60 days of system rebuild</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CREDIBILITY -->
+<section class="section credibility-section" id="about">
+  <div class="section-inner">
+    <p class="section-eyebrow">Not Another Agency</p>
+    <h2 class="section-h2 syne">An Operator Who Builds <em>Systems.</em></h2>
+    <p class="cred-intro">I don't sell "digital marketing." I install paid acquisition infrastructure that compounds. Eleven years managing campaigns that have moved real revenue — not vanity metrics.</p>
+    <div class="cred-grid">
+      <div class="cred-item">
+        <div class="num">$551.9M</div>
+        <div class="lbl">Tracked Sales · B2B Engine Mfg</div>
+        <div class="desc">115× ROAS, full conversion tracking overhaul</div>
+      </div>
+      <div class="cred-item">
+        <div class="num">60×</div>
+        <div class="lbl">Peak ROAS · AU/NZ Sporting Goods</div>
+        <div class="desc">BFCM PMax + Search rebuild with geo-targeting</div>
+      </div>
+      <div class="cred-item">
+        <div class="num">10,117%</div>
+        <div class="lbl">Conversion Lift · Security eCommerce</div>
+        <div class="desc">12-month system installation, sustained growth</div>
+      </div>
+      <div class="cred-item">
+        <div class="num">53%</div>
+        <div class="lbl">CPA Reduction · Healthcare ($115 → $54)</div>
+        <div class="desc">CallTrackingMetrics + TCPA bid strategy</div>
+      </div>
+    </div>
+    <p class="cred-tagline">"Your HVAC campaigns get the same systems that delivered $550M+ in revenue. Not templates. Not guesswork. Proven infrastructure."</p>
+  </div>
+</section>
+
+<!-- OFFER -->
+<section class="section offer-section" id="diagnostic">
+  <div class="section-inner">
+    <div class="offer-grid">
+      <div class="offer-left">
+        <p class="section-eyebrow">The Offer</p>
+        <h2 class="section-h2 syne">The $500 Diagnostic That <em>Pays For Itself</em> In Week 1</h2>
+        <p style="font-size:0.95rem; color: var(--gray); margin-bottom: 1rem;">48-hour Google Ads performance audit delivered as:</p>
+        <ul class="offer-list">
+          <li>7–10 page report showing exact wasted spend (with dollar amounts, not vague recommendations)</li>
+          <li>Top 3 leaks identified with quick-win fixes you can execute immediately</li>
+          <li>Conversion tracking health check — what's broken, what's missing, what's lying to you</li>
+          <li>30-day implementation roadmap with prioritized action items</li>
+          <li>30-minute recorded Loom walkthrough — watch it anytime, share with your team</li>
+        </ul>
+        <div class="guarantee-box">
+          <p><strong>The Guarantee:</strong> If I don't find at least $2,000/year in wasted spend, you get a full refund. No questions. No fine print.</p>
+        </div>
+        <p style="font-size:0.82rem; color: var(--gray); margin-top:1.5rem;">Delivered in 48–72 hours. One-time investment. You own everything.</p>
+      </div>
+      <div>
+        <div class="offer-cta-box">
+          <div class="offer-price">$500</div>
+          <div class="offer-price-sub mono">one-time · 48-hour turnaround</div>
+          <a href="https://tidycal.com/hanslacida" class="btn-primary" target="_blank">Get My Diagnostic Now</a>
+          <a href="https://tidycal.com/hanslacida" class="offer-cta-book" target="_blank">Book a 15-min strategy call instead</a>
+          <ul>
+            <li>11+ years paid acquisition experience</li>
+            <li>$550M+ revenue tracked across verticals</li>
+            <li>50%+ average CPA reduction</li>
+            <li>No long-term contracts</li>
+            <li>Full refund if no $2K+ waste found</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section how-section" id="how">
+  <div class="section-inner">
+    <p class="section-eyebrow">The Process</p>
+    <h2 class="section-h2 syne">From Diagnostic to <em>Dominance</em> in 90 Days</h2>
+    <div class="steps-grid">
+      <div class="step">
+        <div class="step-num syne">01</div>
+        <h3 class="syne">The $500 Diagnostic</h3>
+        <p>Week 1. You see exactly where your budget is leaking. Most contractors find $3K–$8K/month in waste on the first look.</p>
+        <div class="step-price mono">$500 one-time</div>
+        <span class="step-arrow">→</span>
+      </div>
+      <div class="step">
+        <div class="step-num syne">02</div>
+        <h3 class="syne">Fix + Manage</h3>
+        <p>Weeks 2–12. I rebuild your campaigns with proper tracking, negative keywords, and geo-targeting from the ground up.</p>
+        <div class="step-price mono">$1,500–$2,500/mo</div>
+        <span class="step-arrow">→</span>
+      </div>
+      <div class="step">
+        <div class="step-num syne">03</div>
+        <h3 class="syne">Scale Systems</h3>
+        <p>Month 4+. Add Meta retargeting, landing pages, CRM automation. Ascend to market dominance at your own pace.</p>
+        <div class="step-price mono">$3,500–$10,000/mo</div>
+      </div>
+    </div>
+    <p style="font-size:0.85rem; color: var(--gray); margin-top: 2rem; font-family: 'IBM Plex Mono', monospace;">You control the pace. No long-term contracts. Cancel anytime.</p>
+  </div>
+</section>
+
+<!-- CASE STUDIES -->
+<section class="section cases-section" id="cases">
+  <div class="section-inner">
+    <p class="section-eyebrow">Case Studies</p>
+    <h2 class="section-h2 syne">What Happens When the <em>Systems Work</em></h2>
+    <div class="cases-grid">
+      <div class="case-card">
+        <div class="case-tag mono">Home Services · Local</div>
+        <h3 class="syne">California HVAC · Lead Gen Rebuild</h3>
+        <div class="case-before-after">
+          <div class="bef-aft-row"><span>Cost Per Lead</span><div style="display:flex;gap:1rem"><span class="bef">$115</span><span class="aft">$54</span></div></div>
+          <div class="bef-aft-row"><span>Monthly Leads</span><div style="display:flex;gap:1rem"><span class="bef">18</span><span class="aft">47</span></div></div>
+        </div>
+        <div class="case-result">53%</div>
+        <div class="case-result-label">CPA reduction · Month 1</div>
+        <div class="case-system">System: CallTrackingMetrics integration + TCPA bid strategy</div>
+      </div>
+      <div class="case-card">
+        <div class="case-tag mono">eCommerce · Scaling</div>
+        <h3 class="syne">AU/NZ Sporting Goods · BFCM Scale</h3>
+        <div class="case-before-after">
+          <div class="bef-aft-row"><span>Campaign State</span><div style="display:flex;gap:1rem"><span class="bef">Fragmented</span><span class="aft">Unified</span></div></div>
+          <div class="bef-aft-row"><span>Peak ROAS</span><div style="display:flex;gap:1rem"><span class="bef">4×</span><span class="aft">60×</span></div></div>
+        </div>
+        <div class="case-result">60×</div>
+        <div class="case-result-label">Peak ROAS during BFCM</div>
+        <div class="case-system">System: PMax + Search rebuild, geo-targeting, daily optimization</div>
+      </div>
+      <div class="case-card">
+        <div class="case-tag mono">B2B Manufacturing</div>
+        <h3 class="syne">Engine Mfg · Revenue at Scale</h3>
+        <div class="case-before-after">
+          <div class="bef-aft-row"><span>CPA</span><div style="display:flex;gap:1rem"><span class="bef">$23</span><span class="aft">$14</span></div></div>
+          <div class="bef-aft-row"><span>Tracked Sales</span><div style="display:flex;gap:1rem"><span class="bef">—</span><span class="aft">$551.9M</span></div></div>
+        </div>
+        <div class="case-result">115×</div>
+        <div class="case-result-label">ROAS · $551.9M tracked sales</div>
+        <div class="case-system">System: Conversion tracking overhaul + bid strategy rebuild</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHO -->
+<section class="section who-section" id="fit">
+  <div class="section-inner">
+    <p class="section-eyebrow">Is This For You?</p>
+    <h2 class="section-h2 syne">This Works Best For HVAC Contractors Who:</h2>
+    <div class="who-grid">
+      <div class="who-fit">
+        <h3 class="syne">Good fit</h3>
+        <ul class="who-list">
+          <li>Spending $5K–$15K/month on Google Ads but frustrated with results</li>
+          <li>Doing $2M–$8M annual revenue and stuck at a plateau</li>
+          <li>Have already fired 2–3 agencies for "not delivering"</li>
+          <li>Have budget but don't trust current systems to scale</li>
+          <li>Want an operator partner, not another vendor</li>
+        </ul>
+      </div>
+      <div class="who-notfit">
+        <h3 class="syne">Not a fit</h3>
+        <ul class="who-list">
+          <li>Doing under $500K/year (need foundational marketing first)</li>
+          <li>Want the cheapest leads at any quality level</li>
+          <li>Not willing to fix tracking and attribution</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section faq-section" id="faq">
+  <div class="section-inner">
+    <p class="section-eyebrow">Common Questions</p>
+    <h2 class="section-h2 syne">Answers Before You Ask</h2>
+    <div class="faq-grid">
+      <div class="faq-item">
+        <h3 class="syne">Why $500 for a diagnostic?</h3>
+        <p>Free audits are generic templates. This is a real operator digging into your account, finding money you're losing, and building a roadmap you can actually execute. If I don't find $2K/year in waste, you get a full refund.</p>
+      </div>
+      <div class="faq-item">
+        <h3 class="syne">Do you only work with HVAC?</h3>
+        <p>No. I've managed campaigns across eCommerce, healthcare, B2B manufacturing, and home services. But HVAC is a focus vertical because the systems I build work especially well in high-CPC local service markets.</p>
+      </div>
+      <div class="faq-item">
+        <h3 class="syne">I'm already with an agency. Now what?</h3>
+        <p>The diagnostic will show you if they're doing their job or leaving money on the table. Most contractors who come to me have fired 2–3 agencies before finding an operator who actually knows paid acquisition systems.</p>
+      </div>
+      <div class="faq-item">
+        <h3 class="syne">What happens after the diagnostic?</h3>
+        <p>You decide. Execute the roadmap yourself, hire someone else, or work with me on a month-to-month retainer. No pressure, no long-term contracts. Ever.</p>
+      </div>
+      <div class="faq-item">
+        <h3 class="syne">Do I need a website?</h3>
+        <p>Yes. If your site is broken or nonexistent, I can build one as part of the full-stack package. The diagnostic focuses on paid ads only.</p>
+      </div>
+      <div class="faq-item">
+        <h3 class="syne">How long until I see results?</h3>
+        <p>Quick wins — negative keywords, bid adjustments, geo fixes — show impact in 7–14 days. Full system rebuild takes 30–60 days. Scaling to dominance is a 6–12 month process.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final-cta" id="contact">
+  <h2 class="section-h2 syne" style="max-width:680px;margin:0 auto 1rem;">Stop Guessing. Start Knowing Where Every Dollar Goes.</h2>
+  <p>$500 diagnostic. 48 hours. See exactly where your Google Ads budget is leaking — with dollar amounts attached.</p>
+  <div class="final-cta-btns">
+    <a href="https://tidycal.com/hanslacida" class="btn-white" target="_blank">Get My Diagnostic Now</a>
+    <a href="https://tidycal.com/hanslacida" class="btn-outline-white" target="_blank">Book a 15-Min Strategy Call</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div>
+      <div class="footer-brand">KaizenStrategy</div>
+      <div class="footer-sub mono">Hans Lacida · Paid Acquisition Systems Operator</div>
+      <div class="footer-sub mono" style="margin-top:0.4rem;">tidycal.com/hanslacida</div>
+    </div>
+    <ul class="footer-links">
+      <li><a href="#cases">Case Studies</a></li>
+      <li><a href="#how">How It Works</a></li>
+      <li><a href="#faq">FAQ</a></li>
+      <li><a href="https://tidycal.com/hanslacida" target="_blank">Book a Call</a></li>
+    </ul>
+  </div>
+  <div class="footer-copy">© 2025 KaizenStrategy. All rights reserved.</div>
+</footer>
+
+</body>
+</html>
